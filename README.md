@@ -1,7 +1,7 @@
 # Calculator ADSOA 
 The purpose of this program is to make a calculator that is divided in three sections: 
 1. Interface: Works as a client, it was build with JavaFX
-2. Middleware: Which funtion is to deliver the messages to every single client/server connected to it, 
+2. Middleware: Which function is to deliver the messages to every single client/server connected to it, 
 3. Server: Makes the operation and returns the answer.
 
 At the moment, the calculator just accepts operations like this 2 + 2. 
