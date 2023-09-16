@@ -6,7 +6,7 @@ The purpose of this program is to make a calculator that is divided in three sec
 
 At the moment, the calculator just accepts operations like this 2 + 2. 
 
-This is a project that is just beginning, it is not finished but every single version works correctly. 
+This is a project that is just starting, and it is not finished but, every single version works correctly. 
 
 The requirements for the first version of the project are:
 
