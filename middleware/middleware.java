@@ -36,11 +36,11 @@ public class middleware {
         @Override
         public void run() {
             try{
-                BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                String clientMessage;
-    
-                while ((clientMessage = in.readLine()) != null) {
-                    System.out.println("Received: " + clientMessage + " from " + socket.getPort());
+                InputStream in = this.socket.getInputStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    System.out.println("Received: " + bytesRead + " from " + socket.getPort());
     
                     // Broadcast the message to all other clients
                     for (Socket clientSocket : clientSockets) {
@@ -48,9 +48,10 @@ public class middleware {
                             if(clientSocket.getPort() == socket.getPort()){
                                 continue;
                             }
-                            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                            writer.println(clientMessage);
-                            System.out.println("Sent to: " + clientSocket.getPort() + ": " + clientMessage);
+                            OutputStream writer = clientSocket.getOutputStream();
+                            writer.write(buffer, 0, bytesRead);
+                            writer.flush();
+                            System.out.println("Sent to: " + clientSocket.getPort() + ": " + bytesRead);
                         } catch (IOException e) {
                             System.err.println("Error sending message to a client: " + e.getMessage());
                         }
@@ -60,7 +61,10 @@ public class middleware {
                 if (!socket.isClosed()) {
                     System.err.println("Error handling client: " + e.getMessage());
                 }
-            } 
+            } finally{
+                clientSockets.remove(this.socket);
+                System.out.println("Client disconnected: " + socket.getPort());
+            }
         }
     }
     

@@ -19,11 +19,10 @@ public class MainController{
     private boolean isOperator = false;
     private boolean isFloat = false;
     private String operator = "";
-    private boolean isNumber = false;
 
     private Socket socketMiddleware;
-    private PrintWriter out;
-    private BufferedReader in;
+    private OutputStream out;
+    private InputStream in;
 
     public MainController() {
         // Initialize the socket connection in the constructor
@@ -32,8 +31,8 @@ public class MainController{
 
         try {
             socketMiddleware = new Socket(HOST, PORT);
-            out = new PrintWriter(socketMiddleware.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socketMiddleware.getInputStream()));
+            out = socketMiddleware.getOutputStream();
+            in = socketMiddleware.getInputStream();
 
             Thread responseThread = new Thread(this::receiveResponses);
             responseThread.setDaemon(true); // Make it a daemon thread so it exits when the application exits
@@ -97,27 +96,33 @@ public class MainController{
     }
 
     public void sendOperation(String operation){
-        
-        out.println(operation);
+        byte[] buffer = operation.getBytes();      
+        try{
+            out.write(buffer);
+            out.flush();
+        }
+        catch(IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     private void receiveResponses() {
         try {
             while (true) {
-                String response = in.readLine();
+                byte[] buffer = new byte[1024];
+                int bytesRead = in.read(buffer);
+                String response = new String(buffer, 0, bytesRead);
                
-                if (response != null) {
+                if (response != "") {
                     // Update the UI with the received response
                     updateUIWithResponse(response);
                 } else {
-                    // Handle the case where the server closed the connection
                     System.out.println("Server closed the connection.");
                     break;
                 }
             }
         } catch (IOException e) {
             System.out.println("Error while receiving responses: " + e.getMessage());
-            // Handle the error gracefully in your application
         }
     }
 

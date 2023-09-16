@@ -6,8 +6,8 @@ import java.util.HashMap;
 public class calculatorServer {
 
     private static Socket socketMiddleware;
-    private static PrintWriter out;
-    private static BufferedReader in;
+    private static OutputStream out;
+    private static InputStream in;
     public static void main(String[] args) {
         final String HOST = "localhost"; // Host del middleware
         final int PORT = 12345; // Puerto del middleware
@@ -15,26 +15,32 @@ public class calculatorServer {
         try {
             System.out.println("Server is running");
             socketMiddleware = new Socket(HOST, PORT);
-            out = new PrintWriter(socketMiddleware.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socketMiddleware.getInputStream()));
+            out = socketMiddleware.getOutputStream();
+            in = socketMiddleware.getInputStream();
        } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
-            // Handle the error gracefully in your application
         }
 
         while(true){
             try{
                 System.out.println("Waiting for operation");
-                String operation = in.readLine();
-                System.out.println("Received: " + operation);
-                if(operation.equals("")){
+                byte[] buffer = new byte[1024];
+                int bytesRead = in.read(buffer);
+
+                
+
+                byte[] receivedData = new byte[bytesRead];
+                System.arraycopy(buffer, 0, receivedData, 0, bytesRead);
+                System.out.println("Received data: " + new String(receivedData, 0, bytesRead));
+
+                if (receivedData.length == 0) {
                     System.out.println("Message discarded");
                     continue;
-                }
-                else{
-                    String result = decodeOperation(operation);
+                } else {
+                    String result = decodeOperation(new String(receivedData, 0, bytesRead));
                     System.out.println("This is decoded operation: " + result);
-                    out.println(result);
+                    out.write(result.getBytes());
+                    out.flush();
                 }
                 
             }catch(IOException e){
