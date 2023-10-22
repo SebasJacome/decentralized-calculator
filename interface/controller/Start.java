@@ -1,4 +1,5 @@
-package com.calculator;
+package controller;
+
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,7 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class StartApp extends Application {
+public class Start extends Application {
 
     private final String PATH_FILE = "./MainPage.fxml";
 
@@ -24,7 +25,7 @@ public class StartApp extends Application {
         }
     }
 
-    public static void run() {
+    public static void main(String[] args) {
         launch();
     }
 }

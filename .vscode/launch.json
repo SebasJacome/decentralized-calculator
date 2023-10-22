@@ -1,0 +1,57 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Start",
+            "request": "launch",
+            "mainClass": "com.calculator.Start",
+            "projectName": "calculator"
+        },
+        {
+            "type": "java",
+            "name": "calculatorServer",
+            "request": "launch",
+            "mainClass": "calculatorServer",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
+            "name": "Start(1)",
+            "request": "launch",
+            "mainClass": "controller.Start",
+            "projectName": "decentralized-calculator_c6beb18b",
+            "vmArgs": "--module-path /Users/sebasjack/Documents/dev/javafx-sdk-21.0.1/lib --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "middleware",
+            "request": "launch",
+            "mainClass": "middleware.middleware",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
+            "name": "prueba",
+            "request": "launch",
+            "mainClass": "prueba",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
+            "name": "suma",
+            "request": "launch",
+            "mainClass": "suma",
+            "projectName": "decentralized-calculator_c6beb18b"
+        }
+    ]
+}

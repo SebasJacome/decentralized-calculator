@@ -1,4 +1,6 @@
-package com.calculator;
+package controller;
+
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,6 +10,8 @@ import javafx.scene.control.Button;
 
 import java.io.*;
 import java.net.*;
+
+import mensaje.DecoderEncoder;
 
 public class MainController{
 

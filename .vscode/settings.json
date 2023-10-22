@@ -1,8 +1,13 @@
 {
     "java.project.sourcePaths": [
+        "server",
         "middleware",
         "libreriaComunicacion",
-        "server"
+        "interface"
     ],
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/sebasjack/Documents/dev/javafx-sdk-21.0.1/lib/**/*.jar"
+    ]
 }
