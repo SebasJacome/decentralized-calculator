@@ -5,24 +5,57 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class middleware {
+    private static Socket socketMiddleware;
     final static String HOST = "localhost";
     final static int PORT_INTERFACE = 12345; // Port from which I'm listening
+    final static int[] PORTS = {12345, 12346, 12347, 12348, 12349};
     private static List<Socket> clientSockets = new ArrayList<>();
+    private static List<Socket> momSockets = new ArrayList<>();
+    private static boolean isAnyConnected = false;
 
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PORT_INTERFACE)) {
-            System.out.println("Server is running and listening on port " + PORT_INTERFACE);
+        int counter = 0;
+    
+        while(true){
+            try (ServerSocket serverSocket = new ServerSocket(PORTS[counter])) {
+                System.out.println("Server is running and listening on port " + serverSocket.getLocalPort());
+                if(PORTS[counter] == PORTS[0]){
+                    isAnyConnected = false;
+                }
+                else{
+                    isAnyConnected = true;
+                    for(int i = 0; i<counter; i++){
+                        try{
+                            System.out.println("Connected to middleware with port: " + PORTS[i]);
+                            socketMiddleware = new Socket(HOST, PORTS[i]);
+                            clientSockets.add(socketMiddleware);
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket.getPort());
-                clientSockets.add(clientSocket);
+                            new ClientHandler(socketMiddleware).start();
+                        }
+                        catch(IOException e){
+                            System.out.println("Error: " + e.getMessage());
+                        }
+                    }
+                }
+                while (true) {
 
-                new ClientHandler(clientSocket).start();
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("Client connected: " + clientSocket.getPort());
+                    clientSockets.add(clientSocket);
+
+                    new ClientHandler(clientSocket).start();
+                }
+            } catch (IOException e) {
+                System.out.println("The port " + PORTS[counter] + " is already occupied");
+                if(counter<5){
+                    counter++;
+                }
+                else{
+                    System.err.println("Error because the program is out of ports " + e.getMessage());
+                }
             }
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 

@@ -21,8 +21,8 @@ public class MainController{
     private String operator = "";
 
     private Socket socketMiddleware;
-    private OutputStream out;
-    private InputStream in;
+    private DataOutputStream out;
+    private DataInputStream in;
 
     public MainController() {
         // Initialize the socket connection in the constructor
@@ -31,8 +31,8 @@ public class MainController{
 
         try {
             socketMiddleware = new Socket(HOST, PORT);
-            out = socketMiddleware.getOutputStream();
-            in = socketMiddleware.getInputStream();
+            out = new DataOutputStream(socketMiddleware.getOutputStream());
+            in = new DataInputStream(socketMiddleware.getInputStream());
 
             Thread responseThread = new Thread(this::receiveResponses);
             responseThread.setDaemon(true); // Make it a daemon thread so it exits when the application exits

@@ -11,10 +11,12 @@ public class calculatorServer {
     public static void main(String[] args) {
         final String HOST = "localhost"; // Host del middleware
         final int PORT = 12345; // Puerto del middleware
+        final int[] PORTS = {12345, 12346, 12347, 12348, 12349};
+        int counter = 0;
 
         try {
             System.out.println("Server is running");
-            socketMiddleware = new Socket(HOST, PORT);
+            socketMiddleware = new Socket(HOST, PORTS[counter]);
             out = socketMiddleware.getOutputStream();
             in = socketMiddleware.getInputStream();
        } catch (IOException e) {
