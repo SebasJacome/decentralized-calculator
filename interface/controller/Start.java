@@ -11,6 +11,7 @@ public class Start extends Application {
 
     private final String PATH_FILE = "./MainPage.fxml";
 
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         try{

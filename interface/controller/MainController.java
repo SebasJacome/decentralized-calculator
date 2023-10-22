@@ -10,8 +10,11 @@ import javafx.scene.control.Button;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 import mensaje.DecoderEncoder;
+import mensaje.Mensaje;
 
 public class MainController{
 
@@ -28,11 +31,40 @@ public class MainController{
     private DataOutputStream out;
     private DataInputStream in;
 
+    private Mensaje m;
+
+    private ArrayList<String> sentMessages = new ArrayList<>();
+
+    
+
+    final private static String PATH_MOM_LOG = "./middleware/middleware/logs.txt";
+
     public MainController() {
         // Initialize the socket connection in the constructor
         final String HOST = "localhost"; // Host del middleware
-        final int PORT = 12345; // Puerto del middleware
-
+        int PORT = 12345; // Puerto del middleware default es el 12345
+        ArrayList<Integer> PORTS = new ArrayList<Integer>();
+        try{
+            File logReader = new File(PATH_MOM_LOG);
+            Scanner myReader = new Scanner(logReader);
+            while(myReader.hasNextLine()){
+                try{
+                    PORTS.add(myReader.nextInt());
+                }
+                catch(Exception e){
+                    break;
+                }
+            }
+            myReader.close();
+            int rand = (int) (Math.random() * PORTS.size());
+            PORT = PORTS.get(rand);
+            System.out.println("Calculator will connect to: " + HOST + "::" + PORT);
+        }
+        catch(FileNotFoundException e){
+            System.err.println("An error ocurred while reading the file, port 12345 will be used by defaut " + e.getStackTrace());
+        }
+        
+        
         try {
             socketMiddleware = new Socket(HOST, PORT);
             out = new DataOutputStream(socketMiddleware.getOutputStream());
@@ -86,24 +118,22 @@ public class MainController{
             }
         }
         else{
+            m = new Mensaje(true);
+            this.sentMessages.add(m.getHashIdentifier());
+            System.out.println("Escribi un msj con este hash: " + m.getHashIdentifier());
             isOperator = false;
             start = true;
-            int encodedOperator = encodeOperator(operator);
+            m.setTipoOperacion(encodeOperator(operator));
             double[] encodedOperands = encodeOperands(result.getText());
-            String encodedOperation = encodedOperator + "|" + encodedOperands[0] + "," + encodedOperands[1];
-            
-            sendOperation(encodedOperation);
-            
+            String encodedOperation = encodedOperands[0] + "," + encodedOperands[1];
+            m.setDatos(encodedOperation.getBytes());
+            sendOperation(m);
         }
-        
-        
     }
 
-    public void sendOperation(String operation){
-        byte[] buffer = operation.getBytes();      
+    public void sendOperation(Mensaje m){
         try{
-            out.write(buffer);
-            out.flush();
+            DecoderEncoder.escribir(out, m);
         }
         catch(IOException e){
             System.out.println("Error: " + e.getMessage());
@@ -113,13 +143,17 @@ public class MainController{
     private void receiveResponses() {
         try {
             while (true) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = in.read(buffer);
-                String response = new String(buffer, 0, bytesRead);
-               
+                Mensaje respuesta = DecoderEncoder.leer(in);
+                String response = respuesta.getTipoOperacion() + "|" + respuesta.getDatosString();
                 if (response != "") {
                     // Update the UI with the received response
-                    updateUIWithResponse(response);
+                    if(sentMessages.contains(respuesta.getTransmitterHashIdentifier()))
+                    {
+                        updateUIWithResponse(response);
+                    }
+                    else{
+                        System.out.println("Message will be discarded because it's not for me");
+                    }
                 } else {
                     System.out.println("Server closed the connection.");
                     break;
@@ -135,13 +169,15 @@ public class MainController{
         Platform.runLater(() -> {
             if(!response.equals("")){
                 result1.setText(result1.getText() + "\n" + response);
-                decodeResult(response);
+                if(response.charAt(0) == '5'){
+                    decodeResult(response);
+                }
             }
         });
         
     }
     
-    public int encodeOperator(String operator){
+    public Short encodeOperator(String operator){
         
 
         switch(operator){
@@ -173,7 +209,7 @@ public class MainController{
         int operator = Integer.parseInt(stringArray[0]);
         String[] operands = stringArray[1].split(",");
         
-        if(operator == 100){
+        if(operator == 5){
             double operand3 = Double.parseDouble(operands[2]);
             result.setText(Double.toString(operand3));
         }

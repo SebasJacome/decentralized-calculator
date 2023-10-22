@@ -6,16 +6,30 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
+            "name": "division",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "division",
+            "projectName": "decentralized-calculator_c6beb18b"
         },
         {
             "type": "java",
-            "name": "Start",
+            "name": "multiplicacion",
             "request": "launch",
-            "mainClass": "com.calculator.Start",
-            "projectName": "calculator"
+            "mainClass": "multiplicacion",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
+            "name": "resta",
+            "request": "launch",
+            "mainClass": "resta",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
         },
         {
             "type": "java",
@@ -26,7 +40,7 @@
         },
         {
             "type": "java",
-            "name": "Start(1)",
+            "name": "Start",
             "request": "launch",
             "mainClass": "controller.Start",
             "projectName": "decentralized-calculator_c6beb18b",

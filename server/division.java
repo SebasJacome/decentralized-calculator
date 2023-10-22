@@ -4,7 +4,7 @@ import java.net.*;
 import mensaje.DecoderEncoder;
 import mensaje.Mensaje;
 
-public class suma {
+public class division {
     final private static String HOST = "localhost"; // Host del middleware
     final private static int[] PORTS = {12345, 12346, 12347, 12348, 12349};
     private static DataOutputStream out;
@@ -24,13 +24,13 @@ public class suma {
             PORT = array[1];
             System.out.println(tipoOperacion);
             System.out.println(PORT);
-            if(tipoOperacion.equals("1")){
-                System.out.println("The middleware with port{" + PORTS[counter] + "} is already occupied by another sum cell");
+            if(tipoOperacion.equals("4")){
+                System.out.println("The middleware with port{" + PORTS[counter] + "} is already occupied by another division cell");
                 counter += 1;
             }
         }
         try(Socket socket = new Socket(HOST, PORTS[counter])){
-            System.out.println("The sum cell has successfully connected to the MOM with port: " + socket.getPort());
+            System.out.println("The division cell has successfully connected to the MOM with port: " + socket.getPort());
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
             FileWriter writer = new FileWriter(file, true);
@@ -40,7 +40,7 @@ public class suma {
             while(true){
                 Mensaje mensaje = DecoderEncoder.leer(in);
                 System.out.println("The message: " + mensaje + " has been received from: " + socket.getPort());
-                if(mensaje.getTipoOperacion() == 1){
+                if(mensaje.getTipoOperacion() == 4){
                     Mensaje mensajeResultado = solution(mensaje);
                     DecoderEncoder.escribir(out, mensajeResultado);
                 }
@@ -66,7 +66,7 @@ public class suma {
         double result = 0.0;
         Short tipoOperacion = 5;
 
-        result = operand1 + operand2;
+        result = operand1 / operand2;
         resultado.setTipoOperacion(tipoOperacion);
         str = str + "," + result;
         resultado.setDatos(str.getBytes());

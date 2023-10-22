@@ -1,5 +1,7 @@
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.io.*;
 
 
@@ -7,36 +9,13 @@ import java.io.*;
 
 
 public class prueba {
+    final private static String PATH_MOM_LOG = "./middleware/middleware/logs.txt";
     public static void main(String[] args) throws NoSuchAlgorithmException, IOException{
-        System.out.println("String aleatorio: " + getAlphaNumericString());
-        System.out.println("String aleatorio: " + getAlphaNumericString());
-        System.out.println("String aleatorio: " + getAlphaNumericString());
+        String str = "3,3";
+        double result = 6.0;
+        str = str + "," + result;
+        System.out.println(str.getBytes());
+        String newStr = new String(str.getBytes());
+        System.out.println(newStr);
     }
-
-    public static String getAlphaNumericString() 
-    { 
-        int n = 20;
-        // choose a Character random from this String 
-        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                + "0123456789"
-                + "abcdefghijklmnopqrstuvxyz"; 
-        
-        // create StringBuffer size of AlphaNumericString 
-        StringBuilder sb = new StringBuilder(n); 
-        
-        for (int i = 0; i < n; i++) { 
-        
-        // generate a random number between 
-        // 0 to AlphaNumericString variable length 
-        int index 
-            = (int)(AlphaNumericString.length() 
-            * Math.random()); 
-        
-        // add Character one by one in end of sb 
-        sb.append(AlphaNumericString 
-            .charAt(index)); 
-        } 
-        
-        return sb.toString(); 
-    } 
 }

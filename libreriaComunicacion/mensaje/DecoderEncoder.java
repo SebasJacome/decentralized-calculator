@@ -15,13 +15,14 @@ public class DecoderEncoder {
         // leer el arreglo de datos
         byte[] datos = new byte[tam];
         dis.readFully(datos);
-        // se imprime en pantalla
-        String mensaje = new String(datos);
-
-        Mensaje m = new Mensaje();
+        // leer el identificador hash
+        String hashIdentifier = dis.readUTF();
+        String transmitterHashIdentifier = dis.readUTF();
+        Mensaje m = new Mensaje(false);
         m.setTipoOperacion(tipoOperacion);
         m.setDatos(datos);
-
+        m.hashIdentifier = hashIdentifier;
+        m.setTransmitterHashIdentifier(transmitterHashIdentifier);
         return m;
     }
 
@@ -34,6 +35,8 @@ public class DecoderEncoder {
         dos.writeShort(tam);
         // enviar el mensaje en bytes
         dos.write(mensaje.getDatos());
+        dos.writeUTF(mensaje.hashIdentifier);
+        dos.writeUTF(mensaje.transmitterHashIdentifier);
 
     }
 

@@ -5,9 +5,24 @@ public class Mensaje{
     Short tipoOperacion;
     byte[] datos;
     String hashIdentifier;
+    String transmitterHashIdentifier = "";
     
-    public Mensaje(){
-        this.hashIdentifier = getAlphaNumericString();
+    public Mensaje(boolean createHashIdentifier){
+        if(createHashIdentifier == true){
+            this.hashIdentifier = getAlphaNumericString();
+        }
+    }
+
+    public void setTransmitterHashIdentifier(String oldHash){
+        this.transmitterHashIdentifier = oldHash;
+    }
+
+    public String getTransmitterHashIdentifier(){
+        return this.transmitterHashIdentifier;
+    }
+
+    public String getHashIdentifier(){
+        return hashIdentifier;
     }
 
     public Short getTipoOperacion(){
@@ -26,9 +41,15 @@ public class Mensaje{
         this.datos = datos;
     }
 
+    public String getDatosString(){
+        String conversion = new String(this.datos);
+        
+        return conversion;
+    }
+
     @Override
     public String toString(){
-        return "Mensaje{" + "tipoOperacion = " + tipoOperacion + ";ID = " + hashIdentifier +"}";
+        return "Mensaje{" + "tipoOperacion = " + tipoOperacion + ";ID = " + hashIdentifier + ";op = " + this.getDatosString() + "}";
     }
     
     private String getAlphaNumericString() 
