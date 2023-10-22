@@ -29,6 +29,7 @@ public class division {
                 counter += 1;
             }
         }
+        br.close();
         try(Socket socket = new Socket(HOST, PORTS[counter])){
             System.out.println("The division cell has successfully connected to the MOM with port: " + socket.getPort());
             out = new DataOutputStream(socket.getOutputStream());

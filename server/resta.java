@@ -29,6 +29,7 @@ public class resta {
                 counter += 1;
             }
         }
+        br.close();
         try(Socket socket = new Socket(HOST, PORTS[counter])){
             System.out.println("The substraction cell has successfully connected to the MOM with port: " + socket.getPort());
             out = new DataOutputStream(socket.getOutputStream());
