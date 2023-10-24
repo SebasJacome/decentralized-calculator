@@ -35,7 +35,7 @@ public class division {
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
             FileWriter writer = new FileWriter(file, true);
-            writer.write("1," + socket.getPort() + "\n");
+            writer.write("4," + socket.getPort() + "\n");
             writer.close();
             System.out.println("Log has been modified successfully");
             while(true){

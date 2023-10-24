@@ -7,6 +7,7 @@ import mensaje.Mensaje;
 public class suma {
     final private static String HOST = "localhost"; // Host del middleware
     final private static int[] PORTS = {12345, 12346, 12347, 12348, 12349};
+
     private static DataOutputStream out;
     private static DataInputStream in;
     final private static String FILE= "./server/logs.txt";
