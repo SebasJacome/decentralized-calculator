@@ -12,7 +12,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 import java.util.ArrayList;
-
+import foliadoMensajes.FilasSalida;
 import mensaje.DecoderEncoder;
 import mensaje.Mensaje;
 
@@ -34,6 +34,8 @@ public class MainController{
     private Mensaje m;
 
     private ArrayList<String> sentMessages = new ArrayList<>();
+    private FilasSalida filasSalida = new FilasSalida();
+    private int maxAcknowledge = 3;
 
     
 

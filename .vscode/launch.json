@@ -3,6 +3,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "server",
+            "request": "launch",
+            "mainClass": "intentoFoliado.server",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
+            "name": "lecturaMensajes",
+            "request": "launch",
+            "mainClass": "intentoFoliado.lecturaMensajes",
+            "projectName": "decentralized-calculator_c6beb18b"
+        },
+        {
+            "type": "java",
             "name": "division",
             "request": "launch",
             "mainClass": "division",

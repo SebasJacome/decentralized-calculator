@@ -3,7 +3,11 @@
         "server",
         "middleware",
         "libreriaComunicacion",
-        "interface"
+        "interface",
+        "protocolos",
+        "protocolos/protocolosComunicacion",
+        "PruebaArchivos",
+        "foliado"
     ],
     "java.configuration.updateBuildConfiguration": "interactive",
     "java.project.referencedLibraries": [
