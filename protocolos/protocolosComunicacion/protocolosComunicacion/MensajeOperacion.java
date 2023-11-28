@@ -4,14 +4,15 @@ import java.io.*;
 
 
 
-public class MensajeOperacion implements Serializable{
+public class MensajeOperacion implements Serializable, MensajeBase{
     private short tipo_operacion;
     private String evento;
-    private int numero1;
-    private int numero2;
+    private float numero1;
+    private float numero2;
+    public String transmitterHashIdentifier = "";
 
 
-    public MensajeOperacion(short operacion, String evento, int numero1, int numero2){
+    public MensajeOperacion(short operacion, String evento, float numero1, float numero2){
         this.tipo_operacion = operacion;
         if(evento == ""){
             this.evento = getAlphaNumericString();
@@ -32,8 +33,8 @@ public class MensajeOperacion implements Serializable{
         dos.writeShort(tamano_servicio);
         dos.writeShort(tamano_evento);
         dos.write(tam);
-        dos.writeInt(numero1);
-        dos.writeInt(numero2);
+        dos.writeFloat(numero1);
+        dos.writeFloat(numero2);
     }
 
     public static MensajeOperacion deserializar(DataInputStream dis) throws IOException{
@@ -44,19 +45,22 @@ public class MensajeOperacion implements Serializable{
         byte[] tam = new byte[(int)tamanoEvento];
         dis.read(tam);
         String evento = new String(tam);
-        int numero1 = dis.readInt();
-        int numero2 = dis.readInt();
+        float numero1 = dis.readFloat();
+        float numero2 = dis.readFloat();
         return new MensajeOperacion(tipoOperacion, evento, numero1, numero2);
     }
 
     public String getEvento() {
         return evento;
-    }public int getNumero1() {
+    }public float getNumero1() {
         return numero1;
-    }public int getNumero2() {
+    }public float getNumero2() {
         return numero2;
-    }public short getTipo_operacion() {
+    }public short getTipoOperacion() {
         return tipo_operacion;
+    }
+    public String getTransmitterHashIdentifier() {
+        return transmitterHashIdentifier;
     }
 
     @Override

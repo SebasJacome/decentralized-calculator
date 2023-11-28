@@ -13,8 +13,7 @@ import java.net.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 import foliadoMensajes.FilasSalida;
-import mensaje.DecoderEncoder;
-import mensaje.Mensaje;
+import protocolosComunicacion.*;
 
 public class MainController{
 
@@ -31,7 +30,8 @@ public class MainController{
     private DataOutputStream out;
     private DataInputStream in;
 
-    private Mensaje m;
+
+    private MensajeOperacion msj;
 
     private ArrayList<String> sentMessages = new ArrayList<>();
     private FilasSalida filasSalida = new FilasSalida();
@@ -103,7 +103,7 @@ public class MainController{
         
     }
 
-    public void processOperator(ActionEvent event){
+    public void processOperator(ActionEvent event) throws IOException{
         String value = ((Button)event.getSource()).getText();
         
         if(!value.equals("=")){
@@ -120,22 +120,56 @@ public class MainController{
             }
         }
         else{
-            m = new Mensaje(true);
-            this.sentMessages.add(m.getHashIdentifier());
-            System.out.println("Escribi un msj con este hash: " + m.getHashIdentifier());
+            float[] encodedOperands = encodeOperands(result.getText());
+
+            msj = new MensajeOperacion(encodeOperator(operator), "", encodedOperands[0], encodedOperands[1]);
+            msj.transmitterHashIdentifier = msj.getEvento();
+            this.sentMessages.add(msj.getEvento());
+            System.out.println("Escribi un mensaje de operacion con este hash: " + msj.getEvento() + " y estos numeros: " + msj.getNumero1() + ", " + msj.getNumero2());
             isOperator = false;
             start = true;
-            m.setTipoOperacion(encodeOperator(operator));
-            double[] encodedOperands = encodeOperands(result.getText());
-            String encodedOperation = encodedOperands[0] + "," + encodedOperands[1];
-            m.setDatos(encodedOperation.getBytes());
-            sendOperation(m);
+            //Se mete a la cola el mensaje
+            filasSalida.addMessage(msj, msj.getTipoOperacion());
+            //Se mete el protocolo a esperar N acuses de recibido
+            protocoloFoliado(msj);
+    
         }
     }
 
-    public void sendOperation(Mensaje m){
+    public void protocoloFoliado(MensajeOperacion msj) throws IOException{
+        
+        int countAcknowledges = 0;
+        Mensaje mensajeHandler = new Mensaje();
+        MensajeBase mensaje;
+        MensajeAcuse acuseRecibido;
+        sendOperation(msj);
+        while(true){
+            try{
+                mensaje = mensajeHandler.deserializarGeneral(in);
+                if(mensaje.getTipoOperacion() == 99){
+                    acuseRecibido = (MensajeAcuse) mensaje;
+                    if(sentMessages.contains(acuseRecibido.getTransmitterHashIdentifier())){
+                        countAcknowledges++;
+                        System.out.println("Recibi un acuse, llevo: " + countAcknowledges + " de: " + maxAcknowledge);
+                    }
+                    if(countAcknowledges == maxAcknowledge){
+                        break;
+                    }
+                    else{
+                        sendOperation(msj);
+                    }
+                }
+                
+            }
+            catch(Exception e){
+                System.out.println("Hubo un error en la funcion protocoloFoliado");
+            }
+        }
+    }
+
+    public void sendOperation(MensajeOperacion m){
         try{
-            DecoderEncoder.escribir(out, m);
+            m.serializar(out);
         }
         catch(IOException e){
             System.out.println("Error: " + e.getMessage());
@@ -145,21 +179,32 @@ public class MainController{
     private void receiveResponses() {
         try {
             while (true) {
-                Mensaje respuesta = DecoderEncoder.leer(in);
-                String response = respuesta.getTipoOperacion() + "|" + respuesta.getDatosString();
-                if (response != "") {
-                    // Update the UI with the received response
-                    if(sentMessages.contains(respuesta.getTransmitterHashIdentifier()))
-                    {
-                        updateUIWithResponse(response);
+                Mensaje mensajeHandler = new Mensaje();
+                MensajeBase mensaje;
+                mensaje = mensajeHandler.deserializarGeneral(in);
+                String response;
+                if(mensaje instanceof MensajeResultado){
+                    MensajeResultado respuesta = (MensajeResultado) mensaje;
+                    response = respuesta.getTipoOperacion() + "|" + respuesta.getResultado();
+                    if (response != "") {
+                        // Update the UI with the received response
+                        if(sentMessages.contains(respuesta.getEvento()))
+                        {
+                            updateUIWithResponse(response);
+                        }
+                        else{
+                            System.out.println("Message will be discarded because it's not for me");
+                        }
+                    } else {
+                        System.out.println("Server closed the connection.");
+                        break;
                     }
-                    else{
-                        System.out.println("Message will be discarded because it's not for me");
-                    }
-                } else {
-                    System.out.println("Server closed the connection.");
-                    break;
                 }
+                else{
+                    System.out.println("No recibí una respuesta");
+                    continue;
+                }
+                
             }
         } catch (IOException e) {
             System.out.println("Error while receiving responses: " + e.getMessage());
@@ -197,11 +242,11 @@ public class MainController{
     }
 
 
-    public double[] encodeOperands(String operands){
-        double[] encodedOperands = new double[2];
+    public float[] encodeOperands(String operands){
+        float[] encodedOperands = new float[2];
         String[] operandsArray = operands.split("\\+|\\-|\\*|\\/");
-        encodedOperands[0] = Double.parseDouble(operandsArray[0]);
-        encodedOperands[1] = Double.parseDouble(operandsArray[1]);
+        encodedOperands[0] = Float.parseFloat(operandsArray[0]);
+        encodedOperands[1] = Float.parseFloat(operandsArray[1]);
         return encodedOperands;
     }
 

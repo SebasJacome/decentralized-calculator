@@ -1,37 +1,8 @@
-package intentoFoliado;
+package protocolosComunicacion;
 import java.io.*;
-import java.net.*;
-import protocolosComunicacion.*;
-public class server {
-    
-    public static void main(String[] args) throws IOException{
-        Mensaje mensajeHandler = new Mensaje();
-
-        ServerSocket server = new ServerSocket(9876);
-        System.out.println("Waiting for the client request");
-        Socket socket = server.accept();
-        System.out.println("Client: " + socket.getLocalPort() + " has connected");
-        DataInputStream dis = new DataInputStream(socket.getInputStream());
-        MensajeBase mensaje = mensajeHandler.deserializarGeneral(dis);
-        System.out.println("El mensaje tiene tipo de operacion: " + mensaje.getEvento());
-        if(mensaje instanceof MensajeAcuse){
-            MensajeAcuse acuse = (MensajeAcuse) mensaje;
-            System.out.println(acuse.getTipoOperacion());
-        }
-        else if(mensaje instanceof MensajeOperacion){
-            MensajeOperacion operacion = (MensajeOperacion) mensaje;
-        }
-        else if(mensaje instanceof MensajeResultado){
-            MensajeResultado resultado = (MensajeResultado) mensaje;
-        }
-
-        server.close();
-    }
 
 
-}
-
-class Mensaje{
+public class Mensaje{
 
     DataInputStream dis;
     short tipoOperacion;

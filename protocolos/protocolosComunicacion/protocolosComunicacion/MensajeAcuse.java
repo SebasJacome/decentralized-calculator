@@ -4,9 +4,10 @@ import java.io.*;
 
 
 
-public class MensajeAcuse implements Serializable{
+public class MensajeAcuse implements Serializable, MensajeBase{
     private short tipo_operacion;
     private String evento;
+    String transmitterHashIdentifier = "";
 
     public MensajeAcuse(short operacion, String evento){
         this.tipo_operacion = operacion;
@@ -46,8 +47,11 @@ public class MensajeAcuse implements Serializable{
 
     public String getEvento() {
         return evento;
-    }public short getTipo_operacion() {
+    }public short getTipoOperacion() {
         return tipo_operacion;
+    }
+    public String getTransmitterHashIdentifier() {
+        return transmitterHashIdentifier;
     }
 
     @Override

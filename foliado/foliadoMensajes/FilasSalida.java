@@ -13,12 +13,16 @@ public class FilasSalida {
         switch(cola){
             case 1:
                 filaSuma.add(mensaje);
+                System.out.println("Se agregó correctamente un mensaje a la cola de suma");
             case 2:
                 filaResta.add(mensaje);
+                System.out.println("Se agregó correctamente un mensaje a la cola de resta");
             case 3:
                 filaMultiplicacion.add(mensaje);
+                System.out.println("Se agregó correctamente un mensaje a la cola de multiplicacion");
             case 4: 
-                filaMultiplicacion.add(mensaje);
+                filaDivision.add(mensaje);
+                System.out.println("Se agregó correctamente un mensaje a la cola de division");
             default:
                 System.err.println("Esa cola a la que intentas acceder no existe, intente de nuevo.");
         }
@@ -47,7 +51,7 @@ public class FilasSalida {
             case 3:
                 return filaMultiplicacion.poll();
             case 4: 
-                return filaMultiplicacion.poll();
+                return filaDivision.poll();
             default:
                 System.err.println("Esa cola a la que intentas acceder no existe, intente de nuevo.");
                 return new MensajeOperacion((short)5, "Error", 0, 0);

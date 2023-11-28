@@ -4,13 +4,14 @@ import java.io.*;
 
 
 
-public class MensajeResultado implements Serializable{
+public class MensajeResultado implements Serializable, MensajeBase{
     private short tipo_operacion;
     private String evento;
-    private int resultado;
+    private float resultado;
+    public String transmitterHashIdentifier = "";
 
 
-    public MensajeResultado(short operacion, String evento, int resultado){
+    public MensajeResultado(short operacion, String evento, float resultado){
         this.tipo_operacion = operacion;
         if(evento == ""){
             this.evento = getAlphaNumericString();
@@ -30,7 +31,7 @@ public class MensajeResultado implements Serializable{
         dos.writeShort(tamano_servicio);
         dos.writeShort(tamano_evento);
         dos.write(tam);
-        dos.writeInt(resultado);
+        dos.writeFloat(resultado);
     }
 
     public static MensajeResultado deserializar(DataInputStream dis) throws IOException{
@@ -41,17 +42,20 @@ public class MensajeResultado implements Serializable{
         byte[] tam = new byte[(int)tamanoEvento];
         dis.read(tam);
         String evento = new String(tam);
-        int resultado = dis.readInt();
+        float resultado = dis.readFloat();
 
         return new MensajeResultado(tipoOperacion, evento, resultado);
     }
 
     public String getEvento() {
         return evento;
-    }public int getResultado() {
+    }public float getResultado() {
         return resultado;
-    }public short getTipo_operacion() {
+    }public short getTipoOperacion() {
         return tipo_operacion;
+    }
+    public String getTransmitterHashIdentifier() {
+        return transmitterHashIdentifier;
     }
 
     @Override

@@ -4,8 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import mensaje.Mensaje;
+
 import mensaje.DecoderEncoder;
+import protocolosComunicacion.*;
 
 public class middleware {
     private static Socket socketMiddleware;
@@ -86,19 +87,49 @@ public class middleware {
         public void run() {
             try(DataInputStream in = new DataInputStream(this.socket.getInputStream());){
                 while(true){
-                    Mensaje mensaje = DecoderEncoder.leer(in);
-                    System.out.println("Received: " + mensaje.getTipoOperacion() + "|" + mensaje.getDatosString() + ", from client: " + socket.getPort());
-                    if(!hashIdentifiers.contains(mensaje.getHashIdentifier())){
-                        hashIdentifiers.add(mensaje.getHashIdentifier());
-                        for(Socket socketTemp : clientSockets){
-                            System.out.println("Sent to: " + socketTemp.getPort() + ": " + mensaje.getDatosString());
-                            DecoderEncoder.escribir(new DataOutputStream(socketTemp.getOutputStream()), mensaje);
-                        } 
+                    Mensaje mensajeHandler = new Mensaje();
+                    MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
+                    System.out.println("El mensaje tiene tipo de operacion: " + mensaje.getEvento());
+                    if(mensaje instanceof MensajeAcuse){
+                        MensajeAcuse acuse = (MensajeAcuse) mensaje;
+                        if(!hashIdentifiers.contains(acuse.getEvento())){
+                            hashIdentifiers.add(acuse.getEvento());
+                            for(Socket socketTemp : clientSockets){
+                                System.out.println("Sent to: " + socketTemp.getPort() + ": " + acuse.toString());
+                                acuse.serializar(new DataOutputStream(socketTemp.getOutputStream()));
+                            }
+                        }
+                        else{
+                            System.out.println("I discarded the message since I've got it before");
+                        }
                     }
-                    else{
-                        System.out.println("This message will be discarded because I've got it before");
+                    else if(mensaje instanceof MensajeOperacion){
+                        MensajeOperacion operacion = (MensajeOperacion) mensaje;
+                        if(!hashIdentifiers.contains(operacion.getEvento())){
+                            hashIdentifiers.add(operacion.getEvento());
+                            for(Socket socketTemp : clientSockets){
+                                System.out.println("Sent to: " + socketTemp.getPort() + ": " + operacion.toString());
+                                operacion.serializar(new DataOutputStream(socketTemp.getOutputStream()));
+                            }
+                        }
+                        else{
+                            System.out.println("I discarded the message since I've got it before");
+                        }
                     }
-                    
+                    else if(mensaje instanceof MensajeResultado){
+                        MensajeResultado resultado = (MensajeResultado) mensaje;
+                        if(!hashIdentifiers.contains(resultado.getEvento())){
+                            hashIdentifiers.add(resultado.getEvento());
+                            for(Socket socketTemp : clientSockets){
+                                System.out.println("Sent to: " + socketTemp.getPort() + ": " + resultado.toString());
+                                resultado.serializar(new DataOutputStream(socketTemp.getOutputStream()));
+                            }
+                        }
+                        else{
+                            System.out.println("I discarded the message since I've got it before");
+                        }
+                    }
+                                        
                 }
             } catch (IOException e) {
                 if (!socket.isClosed()) {
