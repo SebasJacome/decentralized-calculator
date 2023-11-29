@@ -54,6 +54,18 @@ public class MensajeResultado implements Serializable, MensajeBase{
     }public short getTipoOperacion() {
         return tipo_operacion;
     }
+    public void setTipo_operacion(short tipo_operacion) {
+        this.tipo_operacion = tipo_operacion;
+    }
+    public void setEvento(String evento) {
+        this.evento = evento;
+    }
+    public short getTipo_operacion() {
+        return tipo_operacion;
+    }
+    public void setResultado(float resultado){
+        this.resultado = resultado;
+    }
     public String getTransmitterHashIdentifier() {
         return transmitterHashIdentifier;
     }

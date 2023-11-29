@@ -153,6 +153,7 @@ public class MainController{
                         System.out.println("Recibi un acuse, llevo: " + countAcknowledges + " de: " + maxAcknowledge);
                     }
                     if(countAcknowledges == maxAcknowledge){
+                        filasSalida.getMessage(msj.getTipoOperacion());
                         break;
                     }
                     else{
@@ -201,7 +202,7 @@ public class MainController{
                     }
                 }
                 else{
-                    System.out.println("No recibí una respuesta");
+                    System.out.println("Recibi un mensaje, pero no es una respuesta");
                     continue;
                 }
                 
