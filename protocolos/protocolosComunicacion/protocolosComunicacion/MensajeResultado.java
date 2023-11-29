@@ -11,7 +11,7 @@ public class MensajeResultado implements Serializable, MensajeBase{
     public String transmitterHashIdentifier = "";
 
 
-    public MensajeResultado(short operacion, String evento, float resultado){
+    public MensajeResultado(short operacion, String evento, float resultado, String transmitterHashIdentifier){
         this.tipo_operacion = operacion;
         if(evento == ""){
             this.evento = getAlphaNumericString();
@@ -20,6 +20,7 @@ public class MensajeResultado implements Serializable, MensajeBase{
             this.evento = evento;
         }
         this.resultado = resultado;
+        this.transmitterHashIdentifier = transmitterHashIdentifier;
     }
 
     public void serializar(DataOutputStream dos) throws IOException{
@@ -31,6 +32,7 @@ public class MensajeResultado implements Serializable, MensajeBase{
         dos.writeShort(tamano_servicio);
         dos.writeShort(tamano_evento);
         dos.write(tam);
+        dos.writeUTF(transmitterHashIdentifier);
         dos.writeFloat(resultado);
     }
 
@@ -42,9 +44,10 @@ public class MensajeResultado implements Serializable, MensajeBase{
         byte[] tam = new byte[(int)tamanoEvento];
         dis.read(tam);
         String evento = new String(tam);
+        String origin = dis.readUTF();
         float resultado = dis.readFloat();
 
-        return new MensajeResultado(tipoOperacion, evento, resultado);
+        return new MensajeResultado(tipoOperacion, evento, resultado, origin);
     }
 
     public String getEvento() {
@@ -72,7 +75,7 @@ public class MensajeResultado implements Serializable, MensajeBase{
 
     @Override
     public String toString(){
-        return "Mensaje{" + "tipoOperacion = " + tipo_operacion + ";ID = " + evento + ";res = " + resultado + "}";
+        return "Mensaje{" + "tipoOperacion = " + tipo_operacion + ";ID = " + evento + ";res = " + resultado + "}" + ";Origin = " + getTransmitterHashIdentifier();
     }
 
     private String getAlphaNumericString() 

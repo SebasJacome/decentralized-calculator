@@ -14,17 +14,22 @@ public class FilasSalida {
             case 1:
                 filaSuma.add(mensaje);
                 System.out.println("Se agregó correctamente un mensaje a la cola de suma");
+                break;
             case 2:
                 filaResta.add(mensaje);
                 System.out.println("Se agregó correctamente un mensaje a la cola de resta");
+                break;
             case 3:
                 filaMultiplicacion.add(mensaje);
                 System.out.println("Se agregó correctamente un mensaje a la cola de multiplicacion");
+                break;
             case 4: 
                 filaDivision.add(mensaje);
                 System.out.println("Se agregó correctamente un mensaje a la cola de division");
+                break;
             default:
                 System.err.println("Esa cola a la que intentas acceder no existe, intente de nuevo.");
+                break;
         }
     }
     public MensajeOperacion knowMessage(int cola){

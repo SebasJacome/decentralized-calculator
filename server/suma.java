@@ -7,12 +7,10 @@ import protocolosComunicacion.*;
 public class suma {
     final private static String HOST = "localhost"; // Host del middleware
     final private static int[] PORTS = {12345, 12346, 12347, 12348, 12349};
-
     private static DataOutputStream out;
     private static DataInputStream in;
     final private static String FILE= "./server/logs.txt";
     private static int counter = 0;
-
     
     public static void main(String[] args) throws Exception{
         FilaEntrada filaEntrada = new FilaEntrada();
@@ -42,6 +40,7 @@ public class suma {
             writer.close();
             System.out.println("Log has been modified successfully");
             while(true){
+                System.out.println("Ya listo, ahora mensaje");
                 Mensaje mensajeHandler = new Mensaje();
                 MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
                 MensajeOperacion operacion;
@@ -73,9 +72,9 @@ public class suma {
     }
 
     public static void mandarAcuse(String evento) throws IOException{
-        MensajeAcuse mensajeAcuse = new MensajeAcuse((short)99, "");
-        mensajeAcuse.transmitterHashIdentifier = evento;
+        MensajeAcuse mensajeAcuse = new MensajeAcuse((short)99, "", evento);
         mensajeAcuse.serializar(out);
+        System.out.println("Un acuse con tipo: " + mensajeAcuse.getTipoOperacion() + " fue creado");
     }
 
     public static MensajeResultado solution(MensajeOperacion m){
@@ -88,8 +87,9 @@ public class suma {
         Short tipoOperacion = 5;
 
         result = operand1 + operand2;
-        resultado = new MensajeResultado((short)5, "", result);
-        resultado.transmitterHashIdentifier= m.getEvento();
+        resultado = new MensajeResultado((short)tipoOperacion, "", result, m.getEvento());
+        System.out.println("Origin: " + m.getEvento());
+        System.out.println("El mensaje es originario de: " + resultado.getTransmitterHashIdentifier());
 
         return resultado;
     }
@@ -97,4 +97,3 @@ public class suma {
     
 
 }
-

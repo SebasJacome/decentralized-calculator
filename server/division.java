@@ -1,8 +1,8 @@
 import java.io.*;
 import java.net.*;
 
-import mensaje.DecoderEncoder;
-import mensaje.Mensaje;
+import foliadoMensajes.FilaEntrada;
+import protocolosComunicacion.*;
 
 public class division {
     final private static String HOST = "localhost"; // Host del middleware
@@ -13,6 +13,7 @@ public class division {
     private static int counter = 0;
     
     public static void main(String[] args) throws Exception{
+        FilaEntrada filaEntrada = new FilaEntrada();
         File file = new File(FILE);
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
@@ -39,11 +40,24 @@ public class division {
             writer.close();
             System.out.println("Log has been modified successfully");
             while(true){
-                Mensaje mensaje = DecoderEncoder.leer(in);
-                System.out.println("The message: " + mensaje + " has been received from: " + socket.getPort());
-                if(mensaje.getTipoOperacion() == 4){
-                    Mensaje mensajeResultado = solution(mensaje);
-                    DecoderEncoder.escribir(out, mensajeResultado);
+                System.out.println("Ya listo, ahora mensaje");
+                Mensaje mensajeHandler = new Mensaje();
+                MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
+                MensajeOperacion operacion;
+                if(mensaje instanceof MensajeOperacion){
+                    operacion = (MensajeOperacion) mensaje;
+                    filaEntrada.addMessage(operacion);
+                    mandarAcuse(operacion.getEvento());
+                }
+                else{
+                    System.out.println("The message has been discarded becuase its not an operation");
+                    continue;
+                }
+                System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
+                if(operacion.getTipoOperacion() == 4){
+                    MensajeResultado mensajeResultado = solution(operacion);
+                    mensajeResultado.serializar(out);
+                    filaEntrada.getMessage();
                 }
                 else{
                     System.out.println("Message has been discarded because of the operation required");
@@ -57,20 +71,26 @@ public class division {
 
     }
 
-    public static Mensaje solution(Mensaje m){
-        Mensaje resultado = new Mensaje(true);
-        resultado.setTransmitterHashIdentifier(m.getHashIdentifier());
-        String str = m.getDatosString();
-        String[] strOperation = str.split(",");
-        double operand1 = Double.parseDouble(strOperation[0]);
-        double operand2 = Double.parseDouble(strOperation[1]);
-        double result = 0.0;
+    public static void mandarAcuse(String evento) throws IOException{
+        MensajeAcuse mensajeAcuse = new MensajeAcuse((short)99, "", evento);
+        mensajeAcuse.serializar(out);
+        System.out.println("Un acuse con tipo: " + mensajeAcuse.getTipoOperacion() + " fue creado");
+    }
+
+    public static MensajeResultado solution(MensajeOperacion m){
+        MensajeResultado resultado;
+        
+        
+        float operand1 = m.getNumero1();
+        float operand2 = m.getNumero2();
+        float result = 0.0f;
         Short tipoOperacion = 5;
 
         result = operand1 / operand2;
-        resultado.setTipoOperacion(tipoOperacion);
-        str = str + "," + result;
-        resultado.setDatos(str.getBytes());
+        resultado = new MensajeResultado((short)tipoOperacion, "", result, m.getEvento());
+        System.out.println("Origin: " + m.getEvento());
+        System.out.println("El mensaje es originario de: " + resultado.getTransmitterHashIdentifier());
+
         return resultado;
     }
 

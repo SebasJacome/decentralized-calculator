@@ -9,7 +9,7 @@ public class MensajeAcuse implements Serializable, MensajeBase{
     private String evento;
     public String transmitterHashIdentifier = "";
 
-    public MensajeAcuse(short operacion, String evento){
+    public MensajeAcuse(short operacion, String evento, String transmitterHashIdentifier){
         this.tipo_operacion = operacion;
         if(evento == ""){
             this.evento = getAlphaNumericString();
@@ -17,6 +17,7 @@ public class MensajeAcuse implements Serializable, MensajeBase{
         else{
             this.evento = evento;
         }
+        this.transmitterHashIdentifier = transmitterHashIdentifier;
 
     }
 
@@ -29,6 +30,7 @@ public class MensajeAcuse implements Serializable, MensajeBase{
         dos.writeShort(tamano_servicio);
         dos.writeShort(tamano_evento);
         dos.write(tam);
+        dos.writeUTF(transmitterHashIdentifier);
 
     }
 
@@ -40,9 +42,10 @@ public class MensajeAcuse implements Serializable, MensajeBase{
         byte[] tam = new byte[(int)tamanoEvento];
         dis.read(tam);
         String evento = new String(tam);
+        String origin = dis.readUTF();
 
 
-        return new MensajeAcuse(tipoOperacion, evento);
+        return new MensajeAcuse(tipoOperacion, evento, origin);
     }
 
     public String getEvento() {
@@ -56,7 +59,7 @@ public class MensajeAcuse implements Serializable, MensajeBase{
 
     @Override
     public String toString(){
-        return "Mensaje{" + "tipoOperacion = " + tipo_operacion + ";ID = " + evento  + "}";
+        return "Mensaje{" + "tipoOperacion = " + tipo_operacion + ";ID = " + evento  + "}" + ";Origin = " + getTransmitterHashIdentifier();
     }
     
     private String getAlphaNumericString() 

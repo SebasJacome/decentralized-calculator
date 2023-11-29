@@ -92,6 +92,7 @@ public class middleware {
                     System.out.println("El mensaje tiene tipo de operacion: " + mensaje.getEvento());
                     if(mensaje instanceof MensajeAcuse){
                         MensajeAcuse acuse = (MensajeAcuse) mensaje;
+                        System.out.println("El originario de este mensaje es: " + acuse.getTransmitterHashIdentifier());
                         if(!hashIdentifiers.contains(acuse.getEvento())){
                             hashIdentifiers.add(acuse.getEvento());
                             for(Socket socketTemp : clientSockets){

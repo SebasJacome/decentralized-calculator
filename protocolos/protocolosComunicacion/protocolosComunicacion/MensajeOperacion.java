@@ -12,7 +12,7 @@ public class MensajeOperacion implements Serializable, MensajeBase{
     public String transmitterHashIdentifier = "";
 
 
-    public MensajeOperacion(short operacion, String evento, float numero1, float numero2){
+    public MensajeOperacion(short operacion, String evento, float numero1, float numero2, String transmitterHashIdentifier){
         this.tipo_operacion = operacion;
         if(evento == ""){
             this.evento = getAlphaNumericString();
@@ -22,6 +22,7 @@ public class MensajeOperacion implements Serializable, MensajeBase{
         }
         this.numero1 = numero1;
         this.numero2 = numero2;
+        this.transmitterHashIdentifier = transmitterHashIdentifier;
     }
 
     public void serializar(DataOutputStream dos) throws IOException{
@@ -33,6 +34,7 @@ public class MensajeOperacion implements Serializable, MensajeBase{
         dos.writeShort(tamano_servicio);
         dos.writeShort(tamano_evento);
         dos.write(tam);
+        dos.writeUTF(transmitterHashIdentifier);
         dos.writeFloat(numero1);
         dos.writeFloat(numero2);
     }
@@ -45,9 +47,10 @@ public class MensajeOperacion implements Serializable, MensajeBase{
         byte[] tam = new byte[(int)tamanoEvento];
         dis.read(tam);
         String evento = new String(tam);
+        String origin = dis.readUTF();
         float numero1 = dis.readFloat();
         float numero2 = dis.readFloat();
-        return new MensajeOperacion(tipoOperacion, evento, numero1, numero2);
+        return new MensajeOperacion(tipoOperacion, evento, numero1, numero2, origin);
     }
 
     public String getEvento() {
@@ -65,7 +68,7 @@ public class MensajeOperacion implements Serializable, MensajeBase{
 
     @Override
     public String toString(){
-        return "Mensaje{" + "tipoOperacion = " + tipo_operacion + ";ID = " + evento + ";num1 = " + numero1 + ";num2 = " + numero2 + "}";
+        return "Mensaje{" + "tipoOperacion = " + tipo_operacion + ";ID = " + evento + ";num1 = " + numero1 + ";num2 = " + numero2 + "}" + ";Origin = " + getTransmitterHashIdentifier();
     }
     
     private String getAlphaNumericString() 

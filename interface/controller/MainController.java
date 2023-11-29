@@ -122,7 +122,7 @@ public class MainController{
         else{
             float[] encodedOperands = encodeOperands(result.getText());
 
-            msj = new MensajeOperacion(encodeOperator(operator), "", encodedOperands[0], encodedOperands[1]);
+            msj = new MensajeOperacion(encodeOperator(operator), "", encodedOperands[0], encodedOperands[1], "");
             msj.transmitterHashIdentifier = msj.getEvento();
             this.sentMessages.add(msj.getEvento());
             System.out.println("Escribi un mensaje de operacion con este hash: " + msj.getEvento() + " y estos numeros: " + msj.getNumero1() + ", " + msj.getNumero2());
@@ -131,40 +131,8 @@ public class MainController{
             //Se mete a la cola el mensaje
             filasSalida.addMessage(msj, msj.getTipoOperacion());
             //Se mete el protocolo a esperar N acuses de recibido
-            protocoloFoliado(msj);
+            sendOperation(msj);
     
-        }
-    }
-
-    public void protocoloFoliado(MensajeOperacion msj) throws IOException{
-        
-        int countAcknowledges = 0;
-        Mensaje mensajeHandler = new Mensaje();
-        MensajeBase mensaje;
-        MensajeAcuse acuseRecibido;
-        sendOperation(msj);
-        while(true){
-            try{
-                mensaje = mensajeHandler.deserializarGeneral(in);
-                if(mensaje.getTipoOperacion() == 99){
-                    acuseRecibido = (MensajeAcuse) mensaje;
-                    if(sentMessages.contains(acuseRecibido.getTransmitterHashIdentifier())){
-                        countAcknowledges++;
-                        System.out.println("Recibi un acuse, llevo: " + countAcknowledges + " de: " + maxAcknowledge);
-                    }
-                    if(countAcknowledges == maxAcknowledge){
-                        filasSalida.getMessage(msj.getTipoOperacion());
-                        break;
-                    }
-                    else{
-                        sendOperation(msj);
-                    }
-                }
-                
-            }
-            catch(Exception e){
-                System.out.println("Hubo un error en la funcion protocoloFoliado");
-            }
         }
     }
 
@@ -183,13 +151,14 @@ public class MainController{
                 Mensaje mensajeHandler = new Mensaje();
                 MensajeBase mensaje;
                 mensaje = mensajeHandler.deserializarGeneral(in);
+                System.out.println("Recibí un mensaje de clase: " + mensaje.getClass() + " de tipo: " + mensaje.getTipoOperacion());
                 String response;
                 if(mensaje instanceof MensajeResultado){
                     MensajeResultado respuesta = (MensajeResultado) mensaje;
                     response = respuesta.getTipoOperacion() + "|" + respuesta.getResultado();
                     if (response != "") {
                         // Update the UI with the received response
-                        if(sentMessages.contains(respuesta.getEvento()))
+                        if(sentMessages.contains(respuesta.getTransmitterHashIdentifier()))
                         {
                             updateUIWithResponse(response);
                         }
@@ -258,7 +227,7 @@ public class MainController{
         String[] operands = stringArray[1].split(",");
         
         if(operator == 5){
-            double operand3 = Double.parseDouble(operands[2]);
+            double operand3 = Double.parseDouble(operands[0]);
             result.setText(Double.toString(operand3));
         }
         else{
