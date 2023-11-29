@@ -45,8 +45,6 @@ public class resta {
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
                     operacion = (MensajeOperacion) mensaje;
-                    filaEntrada.addMessage(operacion);
-                    mandarAcuse(operacion.getEvento());
                 }
                 else{
                     System.out.println("The message has been discarded becuase its not an operation");
@@ -55,6 +53,8 @@ public class resta {
                 System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
                 if(operacion.getTipoOperacion() == 2){
                     MensajeResultado mensajeResultado = solution(operacion);
+                    filaEntrada.addMessage(operacion);
+                    mandarAcuse(operacion.getEvento());
                     mensajeResultado.serializar(out);
                     filaEntrada.getMessage();
                 }
@@ -95,6 +95,4 @@ public class resta {
 
 
     
-
 }
-

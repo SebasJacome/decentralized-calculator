@@ -130,7 +130,6 @@ public class MainController{
             start = true;
             //Se mete a la cola el mensaje
             filasSalida.addMessage(msj, msj.getTipoOperacion());
-            //Se mete el protocolo a esperar N acuses de recibido
             sendOperation(msj);
     
         }

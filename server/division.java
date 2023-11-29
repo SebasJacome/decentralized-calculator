@@ -40,14 +40,11 @@ public class division {
             writer.close();
             System.out.println("Log has been modified successfully");
             while(true){
-                System.out.println("Ya listo, ahora mensaje");
                 Mensaje mensajeHandler = new Mensaje();
                 MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
                     operacion = (MensajeOperacion) mensaje;
-                    filaEntrada.addMessage(operacion);
-                    mandarAcuse(operacion.getEvento());
                 }
                 else{
                     System.out.println("The message has been discarded becuase its not an operation");
@@ -56,6 +53,8 @@ public class division {
                 System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
                 if(operacion.getTipoOperacion() == 4){
                     MensajeResultado mensajeResultado = solution(operacion);
+                    filaEntrada.addMessage(operacion);
+                    mandarAcuse(operacion.getEvento());
                     mensajeResultado.serializar(out);
                     filaEntrada.getMessage();
                 }
@@ -97,4 +96,3 @@ public class division {
     
 
 }
-

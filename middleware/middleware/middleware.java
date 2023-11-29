@@ -4,8 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import mensaje.DecoderEncoder;
 import protocolosComunicacion.*;
 
 public class middleware {
@@ -106,6 +104,7 @@ public class middleware {
                     }
                     else if(mensaje instanceof MensajeOperacion){
                         MensajeOperacion operacion = (MensajeOperacion) mensaje;
+                        System.out.println("El originario de este mensaje es: " + operacion.getTransmitterHashIdentifier());
                         if(!hashIdentifiers.contains(operacion.getEvento())){
                             hashIdentifiers.add(operacion.getEvento());
                             for(Socket socketTemp : clientSockets){
@@ -119,6 +118,7 @@ public class middleware {
                     }
                     else if(mensaje instanceof MensajeResultado){
                         MensajeResultado resultado = (MensajeResultado) mensaje;
+                        System.out.println("El originario de este mensaje es: " + resultado.getTransmitterHashIdentifier());
                         if(!hashIdentifiers.contains(resultado.getEvento())){
                             hashIdentifiers.add(resultado.getEvento());
                             for(Socket socketTemp : clientSockets){

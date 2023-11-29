@@ -39,22 +39,21 @@ public class suma {
             writer.write("1," + socket.getPort() + "\n");
             writer.close();
             System.out.println("Log has been modified successfully");
+            Mensaje mensajeHandler = new Mensaje();
             while(true){
-                System.out.println("Ya listo, ahora mensaje");
-                Mensaje mensajeHandler = new Mensaje();
                 MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
                     operacion = (MensajeOperacion) mensaje;
-                    filaEntrada.addMessage(operacion);
-                    mandarAcuse(operacion.getEvento());
                 }
                 else{
-                    System.out.println("The message has been discarded becuase its not an operation");
+                    System.out.println("The message has been discarded becuase its not a message for operation");
                     continue;
                 }
                 System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
                 if(operacion.getTipoOperacion() == 1){
+                    filaEntrada.addMessage(operacion);
+                    mandarAcuse(operacion.getEvento());
                     MensajeResultado mensajeResultado = solution(operacion);
                     mensajeResultado.serializar(out);
                     filaEntrada.getMessage();
@@ -88,7 +87,7 @@ public class suma {
 
         result = operand1 + operand2;
         resultado = new MensajeResultado((short)tipoOperacion, "", result, m.getEvento());
-        System.out.println("Origin: " + m.getEvento());
+        System.out.println("Realizando la operacion: " + operand1 + " + " + operand2 + " = " + result);
         System.out.println("El mensaje es originario de: " + resultado.getTransmitterHashIdentifier());
 
         return resultado;

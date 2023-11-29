@@ -16,22 +16,27 @@ public class Mensaje{
         short tamanoEvento = dis.readShort();
         byte[] tam = new byte[(int)tamanoEvento];
         dis.read(tam);
-        String origin = dis.readUTF();
+        String origin;
         String evento = new String(tam);
         this.evento = evento;
-        this.origin = origin;
         System.out.println("Mensaje de tipo: " + tipoOperacion);
         if(tipoOperacion == 99){
             System.out.println("Recibi un acuse");
+            origin = dis.readUTF();
             return mensajeAcuse(tipoOperacion, evento, origin);
         }
         else if(tipoOperacion == 5){
             System.out.println("Recibi un resultado");
+            origin = dis.readUTF();
             return mensajeResultado(tipoOperacion, evento, origin);
         }
-        else{
+        else if (tipoOperacion < 5 && tipoOperacion > 0){
             System.out.println("Recibi una operacion prueba");
+            origin = dis.readUTF();
             return mensajeOperacion(tipoOperacion, evento, origin);
+        }
+        else{
+            return null;
         }
     }
     private MensajeAcuse mensajeAcuse(short tipo_operacion, String evento, String origin){

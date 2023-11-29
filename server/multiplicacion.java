@@ -40,15 +40,11 @@ public class multiplicacion {
             writer.close();
             System.out.println("Log has been modified successfully");
             while(true){
-                System.out.println("Ya listo, ahora mensaje");
                 Mensaje mensajeHandler = new Mensaje();
-                System.out.println("Ya listo, ahora mensaje base");
                 MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
                     operacion = (MensajeOperacion) mensaje;
-                    filaEntrada.addMessage(operacion);
-                    mandarAcuse(operacion.getEvento());
                 }
                 else{
                     System.out.println("The message has been discarded becuase its not an operation");
@@ -57,6 +53,8 @@ public class multiplicacion {
                 System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
                 if(operacion.getTipoOperacion() == 3){
                     MensajeResultado mensajeResultado = solution(operacion);
+                    filaEntrada.addMessage(operacion);
+                    mandarAcuse(operacion.getEvento());
                     mensajeResultado.serializar(out);
                     filaEntrada.getMessage();
                 }

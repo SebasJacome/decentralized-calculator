@@ -44,7 +44,7 @@ public class FilasSalida {
                 return filaDivision.peek();
             default:
                 System.err.println("Esa cola a la que intentas acceder no existe, intente de nuevo.");
-                return new MensajeOperacion((short)5, "Error", 0, 0);
+                return new MensajeOperacion((short)5, "Error", 0, 0, "");
         }
     }
     public MensajeOperacion getMessage(int cola){
@@ -59,7 +59,7 @@ public class FilasSalida {
                 return filaDivision.poll();
             default:
                 System.err.println("Esa cola a la que intentas acceder no existe, intente de nuevo.");
-                return new MensajeOperacion((short)5, "Error", 0, 0);
+                return new MensajeOperacion((short)5, "Error", 0, 0, "");
         }
     }
 
