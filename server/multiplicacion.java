@@ -39,29 +39,23 @@ public class multiplicacion {
             writer.write("3," + socket.getPort() + "\n");
             writer.close();
             System.out.println("Log has been modified successfully");
+            Mensaje mensajeHandler = new Mensaje();
             while(true){
-                Mensaje mensajeHandler = new Mensaje();
                 MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
                     operacion = (MensajeOperacion) mensaje;
+                    System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
+                    if(operacion.getTipoOperacion() == 3){
+                        filaEntrada.addMessage(operacion);
+                        mandarAcuse(operacion.getEvento());
+                        System.out.println("Ya mandé acuse");
+                        Thread.sleep(1000);
+                        MensajeResultado mensajeResultado = solution(operacion);
+                        mensajeResultado.serializar(out);
+                        System.out.println(filaEntrada.getMessage());
+                    }
                 }
-                else{
-                    System.out.println("The message has been discarded becuase its not an operation");
-                    continue;
-                }
-                System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
-                if(operacion.getTipoOperacion() == 3){
-                    MensajeResultado mensajeResultado = solution(operacion);
-                    filaEntrada.addMessage(operacion);
-                    mandarAcuse(operacion.getEvento());
-                    mensajeResultado.serializar(out);
-                    filaEntrada.getMessage();
-                }
-                else{
-                    System.out.println("Message has been discarded because of the operation required");
-                }
-                
             }
         }
         catch(IOException e){
@@ -73,7 +67,7 @@ public class multiplicacion {
     public static void mandarAcuse(String evento) throws IOException{
         MensajeAcuse mensajeAcuse = new MensajeAcuse((short)99, "", evento);
         mensajeAcuse.serializar(out);
-        System.out.println("Un acuse con tipo: " + mensajeAcuse.getTipoOperacion() + " fue creado");
+        System.out.println("Mensaje Acuse: " + mensajeAcuse.getEvento());
     }
 
     public static MensajeResultado solution(MensajeOperacion m){

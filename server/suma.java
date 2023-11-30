@@ -45,23 +45,17 @@ public class suma {
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
                     operacion = (MensajeOperacion) mensaje;
+                    System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
+                    if(operacion.getTipoOperacion() == 1){
+                        filaEntrada.addMessage(operacion);
+                        mandarAcuse(operacion.getEvento());
+                        System.out.println("Ya mandé acuse");
+                        Thread.sleep(1000);
+                        MensajeResultado mensajeResultado = solution(operacion);
+                        mensajeResultado.serializar(out);
+                        System.out.println(filaEntrada.getMessage());
+                    }
                 }
-                else{
-                    System.out.println("The message has been discarded becuase its not a message for operation");
-                    continue;
-                }
-                System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
-                if(operacion.getTipoOperacion() == 1){
-                    filaEntrada.addMessage(operacion);
-                    mandarAcuse(operacion.getEvento());
-                    MensajeResultado mensajeResultado = solution(operacion);
-                    mensajeResultado.serializar(out);
-                    filaEntrada.getMessage();
-                }
-                else{
-                    System.out.println("Message has been discarded because of the operation required");
-                }
-                
             }
         }
         catch(IOException e){
@@ -73,7 +67,7 @@ public class suma {
     public static void mandarAcuse(String evento) throws IOException{
         MensajeAcuse mensajeAcuse = new MensajeAcuse((short)99, "", evento);
         mensajeAcuse.serializar(out);
-        System.out.println("Un acuse con tipo: " + mensajeAcuse.getTipoOperacion() + " fue creado");
+        System.out.println("Mensaje Acuse: " + mensajeAcuse.getEvento());
     }
 
     public static MensajeResultado solution(MensajeOperacion m){
@@ -87,12 +81,6 @@ public class suma {
 
         result = operand1 + operand2;
         resultado = new MensajeResultado((short)tipoOperacion, "", result, m.getEvento());
-        System.out.println("Realizando la operacion: " + operand1 + " + " + operand2 + " = " + result);
-        System.out.println("El mensaje es originario de: " + resultado.getTransmitterHashIdentifier());
-
         return resultado;
     }
-
-    
-
 }

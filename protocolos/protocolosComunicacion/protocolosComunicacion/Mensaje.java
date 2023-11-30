@@ -28,6 +28,7 @@ public class Mensaje{
         else if(tipoOperacion == 5){
             System.out.println("Recibi un resultado");
             origin = dis.readUTF();
+            System.out.println("Esto me suelta: " + origin);
             return mensajeResultado(tipoOperacion, evento, origin);
         }
         else if (tipoOperacion < 5 && tipoOperacion > 0){
@@ -36,6 +37,7 @@ public class Mensaje{
             return mensajeOperacion(tipoOperacion, evento, origin);
         }
         else{
+            System.out.println("Entró algo sospechoso: " + tipoOperacion + "; " + evento);
             return null;
         }
     }

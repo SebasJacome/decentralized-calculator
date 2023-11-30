@@ -37,6 +37,7 @@ public class MensajeOperacion implements Serializable, MensajeBase{
         dos.writeUTF(transmitterHashIdentifier);
         dos.writeFloat(numero1);
         dos.writeFloat(numero2);
+        dos.flush();
     }
 
     public static MensajeOperacion deserializar(DataInputStream dis) throws IOException{

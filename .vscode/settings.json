@@ -2,11 +2,9 @@
     "java.project.sourcePaths": [
         "server",
         "middleware",
-        "libreriaComunicacion",
         "interface",
         "protocolos",
         "protocolos/protocolosComunicacion",
-        "PruebaArchivos",
         "foliado"
     ],
     "java.configuration.updateBuildConfiguration": "interactive",

@@ -146,32 +146,41 @@ public class MainController{
 
     private void receiveResponses() {
         try {
+            int countAcknowledges = 0;
             while (true) {
                 Mensaje mensajeHandler = new Mensaje();
                 MensajeBase mensaje;
                 mensaje = mensajeHandler.deserializarGeneral(in);
                 System.out.println("Recibí un mensaje de clase: " + mensaje.getClass() + " de tipo: " + mensaje.getTipoOperacion());
                 String response;
-                if(mensaje instanceof MensajeResultado){
-                    MensajeResultado respuesta = (MensajeResultado) mensaje;
-                    response = respuesta.getTipoOperacion() + "|" + respuesta.getResultado();
-                    if (response != "") {
-                        // Update the UI with the received response
-                        if(sentMessages.contains(respuesta.getTransmitterHashIdentifier()))
-                        {
-                            updateUIWithResponse(response);
+
+                if(mensaje instanceof MensajeResultado || mensaje instanceof MensajeAcuse){
+                    if(mensaje instanceof MensajeAcuse){
+                        countAcknowledges++;
+                        System.out.println("Llevo " + countAcknowledges + " acuses");
+                    }
+                    else if (countAcknowledges >= maxAcknowledge){
+                        MensajeResultado respuesta = (MensajeResultado) mensaje;
+                        response = respuesta.getTipoOperacion() + "|" + respuesta.getResultado();
+                        countAcknowledges = 0;
+                        if (response != "") {
+                            // Update the UI with the received response
+                            if(sentMessages.contains(respuesta.getTransmitterHashIdentifier()))
+                            {
+                                updateUIWithResponse(response);
+                            }
+                            else{
+                                System.out.println("Message will be discarded because it's not for me");
+                            }
+                        } else {
+                            System.out.println("Server closed the connection.");
+                            break;
                         }
-                        else{
-                            System.out.println("Message will be discarded because it's not for me");
-                        }
-                    } else {
-                        System.out.println("Server closed the connection.");
-                        break;
                     }
                 }
+
                 else{
                     System.out.println("Recibi un mensaje, pero no es una respuesta");
-                    continue;
                 }
                 
             }
