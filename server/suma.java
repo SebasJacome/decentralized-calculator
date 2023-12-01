@@ -41,17 +41,24 @@ public class suma {
             System.out.println("Log has been modified successfully");
             Mensaje mensajeHandler = new Mensaje();
             while(true){
+                // Aquí se recibe el mensaje y se ve qué tipo de mensaje
                 MensajeBase mensaje = mensajeHandler.deserializarGeneral(in);
                 MensajeOperacion operacion;
                 if(mensaje instanceof MensajeOperacion){
+                    // Aquí se valida que sea una operación y se hace upcast
                     operacion = (MensajeOperacion) mensaje;
                     System.out.println("The message: " + operacion + " has been received from: " + socket.getPort());
                     if(operacion.getTipoOperacion() == 1){
+                        // Se añade a la cola
                         filaEntrada.addMessage(operacion);
+                        // Se manda acuse
                         mandarAcuse(operacion.getEvento());
                         System.out.println("Ya mandé acuse");
+                        // Se duerme el hilo 1 seg para evitar problemas
                         Thread.sleep(1000);
+                        // Se soluciona la operación
                         MensajeResultado mensajeResultado = solution(operacion);
+                        // Se escribe en el output stream
                         mensajeResultado.serializar(out);
                         System.out.println(filaEntrada.getMessage());
                     }

@@ -36,20 +36,6 @@ public class MensajeResultado implements Serializable, MensajeBase{
         dos.writeFloat(resultado);
     }
 
-    public static MensajeResultado deserializar(DataInputStream dis) throws IOException{
-
-        short tipoOperacion = dis.readShort();
-        short tamanoServicio = dis.readShort();
-        short tamanoEvento = dis.readShort();
-        byte[] tam = new byte[(int)tamanoEvento];
-        dis.read(tam);
-        String evento = new String(tam);
-        String origin = dis.readUTF();
-        float resultado = dis.readFloat();
-
-        return new MensajeResultado(tipoOperacion, evento, resultado, origin);
-    }
-
     public String getEvento() {
         return evento;
     }public float getResultado() {

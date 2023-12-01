@@ -40,20 +40,6 @@ public class MensajeOperacion implements Serializable, MensajeBase{
         dos.flush();
     }
 
-    public static MensajeOperacion deserializar(DataInputStream dis) throws IOException{
-
-        short tipoOperacion = dis.readShort();
-        short tamanoServicio = dis.readShort();
-        short tamanoEvento = dis.readShort();
-        byte[] tam = new byte[(int)tamanoEvento];
-        dis.read(tam);
-        String evento = new String(tam);
-        String origin = dis.readUTF();
-        float numero1 = dis.readFloat();
-        float numero2 = dis.readFloat();
-        return new MensajeOperacion(tipoOperacion, evento, numero1, numero2, origin);
-    }
-
     public String getEvento() {
         return evento;
     }public float getNumero1() {

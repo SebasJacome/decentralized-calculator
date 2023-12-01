@@ -34,20 +34,6 @@ public class MensajeAcuse implements Serializable, MensajeBase{
 
     }
 
-    public static MensajeAcuse deserializar(DataInputStream dis) throws IOException{
-
-        short tipoOperacion = dis.readShort();
-        short tamanoServicio = dis.readShort();
-        short tamanoEvento = dis.readShort();
-        byte[] tam = new byte[(int)tamanoEvento];
-        dis.read(tam);
-        String evento = new String(tam);
-        String origin = dis.readUTF();
-
-
-        return new MensajeAcuse(tipoOperacion, evento, origin);
-    }
-
     public String getEvento() {
         return evento;
     }public short getTipoOperacion() {
